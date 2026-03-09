@@ -1,0 +1,12 @@
+const mongoose = require('mongoose');
+
+const cashbookSchema = new mongoose.Schema({
+    id: { type: String, required: true, unique: true },
+    businessId: { type: String, required: true },
+    name: { type: String, required: true },
+    balance: { type: Number, default: 0 },
+    details: { type: String, default: '' },
+    createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Cashbook', cashbookSchema);
