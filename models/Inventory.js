@@ -13,4 +13,7 @@ const inventorySchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Index for fast businessId-scoped queries
+inventorySchema.index({ businessId: 1 });
+
 module.exports = mongoose.model('Inventory', inventorySchema);

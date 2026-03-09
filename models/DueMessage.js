@@ -10,4 +10,7 @@ const dueMessageSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Index for fast businessId-scoped queries
+dueMessageSchema.index({ businessId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('DueMessage', dueMessageSchema);

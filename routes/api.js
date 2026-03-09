@@ -90,8 +90,20 @@ router.delete('/cashbooks/:id', async (req, res) => {
 // --- TRANSACTIONS ---
 router.get('/transactions/:businessId', async (req, res) => {
     try {
-        const docs = await Transaction.find({ businessId: req.params.businessId }).sort({ createdAt: -1 });
-        res.json(docs);
+        const businessId = req.params.businessId;
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(200, parseInt(req.query.limit) || 50);
+        const skip = (page - 1) * limit;
+
+        const filter = { businessId };
+        // Optional cashbookId filter: /transactions/:businessId?cashbookId=xxx
+        if (req.query.cashbookId) filter.cashbookId = req.query.cashbookId;
+
+        const [docs, total] = await Promise.all([
+            Transaction.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            Transaction.countDocuments(filter)
+        ]);
+        res.json({ data: docs, total, page, pages: Math.ceil(total / limit) });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -157,8 +169,16 @@ router.delete('/inventory/:id', async (req, res) => {
 // --- DUE MESSAGES ---
 router.get('/due-messages/:businessId', async (req, res) => {
     try {
-        const docs = await DueMessage.find({ businessId: req.params.businessId }).sort({ createdAt: -1 });
-        res.json(docs);
+        const businessId = req.params.businessId;
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(500, parseInt(req.query.limit) || 100);
+        const skip = (page - 1) * limit;
+
+        const [docs, total] = await Promise.all([
+            DueMessage.find({ businessId }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            DueMessage.countDocuments({ businessId })
+        ]);
+        res.json({ data: docs, total, page, pages: Math.ceil(total / limit) });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -9,4 +9,7 @@ const cashbookSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Index for fast businessId-scoped queries
+cashbookSchema.index({ businessId: 1 });
+
 module.exports = mongoose.model('Cashbook', cashbookSchema);

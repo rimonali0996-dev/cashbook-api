@@ -15,4 +15,8 @@ const stockTransactionSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+// Indexes for fast businessId-scoped queries
+stockTransactionSchema.index({ businessId: 1, createdAt: -1 });
+stockTransactionSchema.index({ productId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('StockTransaction', stockTransactionSchema);
