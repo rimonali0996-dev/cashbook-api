@@ -9,6 +9,15 @@ const DueMessage = require('../models/DueMessage');
 const StockTransaction = require('../models/StockTransaction');
 
 // --- BUSINESSES ---
+router.get('/businesses', async (req, res) => {
+    try {
+        const docs = await Business.find({});
+        res.json(docs);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.post('/businesses', async (req, res) => {
     try {
         const biz = new Business(req.body);
