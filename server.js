@@ -22,6 +22,12 @@ mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 8000 })
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
+// Keep-Alive Routes (ping via UptimeRobot every 14 min to prevent cold start)
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+app.get('/ping', (req, res) => res.send('pong'));
+
 // Root Route
 app.get('/', (req, res) => {
     res.send('Cashbook API is running...');
